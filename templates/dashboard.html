@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Student Management Portal{% endblock %}
+{% block page_heading %}Overview Dashboard{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <!-- Stat 1: Total Students -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card metric-card h-100 p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-secondary small font-weight-bold text-uppercase">Total Students</span>
+                    <h2 class="mt-2 mb-0 font-weight-extrabold">{{ stats.total_students }}</h2>
+                </div>
+                <div class="icon-shape bg-light-primary">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat 2: Total Departments -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card metric-card h-100 p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-secondary small font-weight-bold text-uppercase">Departments</span>
+                    <h2 class="mt-2 mb-0 font-weight-extrabold">{{ stats.total_departments }}</h2>
+                </div>
+                <div class="icon-shape bg-light-success">
+                    <i class="bi bi-building font-weight-bold"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat 3: Total Users -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card metric-card h-100 p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-secondary small font-weight-bold text-uppercase">Portal Users</span>
+                    <h2 class="mt-2 mb-0 font-weight-extrabold">{{ stats.total_users }}</h2>
+                </div>
+                <div class="icon-shape bg-light-warning">
+                    <i class="bi bi-person-badge"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat 4: Active Role -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card metric-card h-100 p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-secondary small font-weight-bold text-uppercase">Your Access Level</span>
+                    <h4 class="mt-2 mb-0 text-primary font-weight-bold">{{ current_user.role }}</h4>
+                </div>
+                <div class="icon-shape bg-light-info">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Action Row -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm p-3 bg-white">
+            <h6 class="font-weight-bold mb-3"><i class="bi bi-lightning-charge text-amber-500 me-2"></i>Quick Actions</h6>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ url_for('student.add_student') }}" class="btn btn-primary d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-person-plus-fill"></i> Add New Student
+                </a>
+                <a href="{{ url_for('student.list_students') }}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-search"></i> View & Search Directory
+                </a>
+                {% if current_user.is_admin %}
+                <a href="{{ url_for('auth.register') }}" class="btn btn-outline-info d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-person-gear"></i> Register Portal User
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Registrations Table -->
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary"><i class="bi bi-clock-history me-2"></i>Recent Student Registrations</h6>
+        <a href="{{ url_for('student.list_students') }}" class="btn btn-sm btn-light text-primary font-weight-semibold">View All <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table custom-table mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Photo</th>
+                        <th>USN</th>
+                        <th>Student Name</th>
+                        <th>Department</th>
+                        <th>Semester</th>
+                        <th>Email</th>
+                        <th class="pe-4 text-end">Registered On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if stats.recent_students %}
+                        {% for std in stats.recent_students %}
+                        <tr>
+                            <td class="ps-4">
+                                <img src="{{ url_for('static', filename='uploads/' + (std.photo_filename or 'default_avatar.png')) }}" 
+                                     alt="Avatar" class="avatar-img"
+                                     onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ std.name|urlencode }}&background=random';">
+                            </td>
+                            <td><span class="badge bg-light text-dark border font-monospace">{{ std.usn }}</span></td>
+                            <td class="font-weight-bold">{{ std.name }}</td>
+                            <td><span class="badge bg-info-subtle text-info border border-info-subtle">{{ std.department }}</span></td>
+                            <td>Sem {{ std.semester }}</td>
+                            <td>{{ std.email }}</td>
+                            <td class="pe-4 text-end text-secondary small">{{ std.created_at.strftime('%Y-%m-%d') if std.created_at else 'N/A' }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">No student records found in database.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Register User - Student Management Portal{% endblock %}
+
+{% block auth_content %}
+<div class="auth-wrapper">
+    <div class="card auth-card p-4 p-sm-5 my-5">
+        <div class="text-center mb-4">
+            <div class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-circle mb-3" style="width: 60px; height: 60px;">
+                <i class="bi bi-person-plus-fill fs-2"></i>
+            </div>
+            <h3 class="auth-brand mb-1">Create Account</h3>
+            <p class="text-muted small">Register a new portal user account</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('auth.register') }}">
+            <div class="mb-3">
+                <label for="username" class="form-label font-weight-semibold">Username</label>
+                <input type="text" class="form-control" id="username" name="username" value="{{ username or '' }}" placeholder="johndoe" required autofocus>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label font-weight-semibold">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ email or '' }}" placeholder="john@college.edu" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="role" class="form-label font-weight-semibold">User Role</label>
+                <select class="form-select" id="role" name="role" required>
+                    <option value="Staff" {% if role == 'Staff' %}selected{% endif %}>Staff (Standard Access)</option>
+                    <option value="Admin" {% if role == 'Admin' %}selected{% endif %}>Admin (Full Access & Delete Privileges)</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label font-weight-semibold">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Minimum 6 characters" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="confirm_password" class="form-label font-weight-semibold">Confirm Password</label>
+                <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Re-enter password" required>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100 py-2 font-weight-bold shadow-sm">
+                <i class="bi bi-check-circle me-2"></i> Register Account
+            </button>
+        </form>
+
+        <div class="text-center mt-4 pt-3 border-top">
+            <p class="text-muted small mb-0">Already registered? <a href="{{ url_for('auth.login') }}" class="text-primary font-weight-bold text-decoration-none">Sign In</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

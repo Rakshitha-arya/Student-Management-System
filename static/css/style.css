@@ -1,0 +1,216 @@
+/* Custom Styling for Student Management Portal */
+
+:root {
+    --bg-main: #f4f6f9;
+    --sidebar-bg: #1e293b;
+    --sidebar-hover: #334155;
+    --sidebar-active: #2563eb;
+    --card-bg: #ffffff;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --accent-blue: #2563eb;
+    --accent-emerald: #10b981;
+    --accent-amber: #f59e0b;
+    --accent-rose: #ef4444;
+    --accent-indigo: #6366f1;
+    --border-color: #e2e8f0;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Sidebar Styling */
+#sidebar-wrapper {
+    min-width: 260px;
+    max-width: 260px;
+    background-color: var(--sidebar-bg);
+    color: #fff;
+    transition: all 0.3s ease;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+}
+
+#sidebar-wrapper .sidebar-heading {
+    padding: 1.5rem 1.25rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+}
+
+#sidebar-wrapper .list-group-item {
+    border: none;
+    background: transparent;
+    color: #94a3b8;
+    padding: 0.85rem 1.25rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    margin: 0.25rem 0.75rem;
+    transition: all 0.2s ease;
+}
+
+#sidebar-wrapper .list-group-item:hover {
+    background-color: var(--sidebar-hover);
+    color: #ffffff;
+    transform: translateX(3px);
+}
+
+#sidebar-wrapper .list-group-item.active {
+    background-color: var(--sidebar-active);
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+#sidebar-wrapper .list-group-item i {
+    width: 24px;
+    font-size: 1.1rem;
+}
+
+/* Main Content Layout */
+#page-content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* Top Navbar */
+.top-navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.85rem 1.5rem;
+}
+
+/* Dynamic Metric Stat Cards */
+.metric-card {
+    border: none;
+    border-radius: 1rem;
+    background: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.metric-card .icon-shape {
+    width: 56px;
+    height: 56px;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.bg-light-primary { background: #dbeafe; color: #1d4ed8; }
+.bg-light-success { background: #d1fae5; color: #047857; }
+.bg-light-warning { background: #fef3c7; color: #b45309; }
+.bg-light-info    { background: #e0e7ff; color: #4338ca; }
+
+/* Custom Tables */
+.custom-table {
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+}
+
+.custom-table thead th {
+    border: none;
+    background-color: transparent;
+    color: var(--text-secondary);
+    font-size: 0.825rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    padding: 0.75rem 1rem;
+}
+
+.custom-table tbody tr {
+    background-color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    border-radius: 0.5rem;
+    transition: transform 0.15s ease;
+}
+
+.custom-table tbody tr:hover {
+    transform: scale(1.002);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.custom-table tbody td {
+    border: none;
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+.custom-table tbody td:first-child {
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+}
+
+.custom-table tbody td:last-child {
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+/* Student Avatar Thumbnail */
+.avatar-img {
+    width: 42px;
+    height: 42px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #e2e8f0;
+}
+
+/* Authentication Container */
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 440px;
+    border-radius: 1.25rem;
+    border: none;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    background: #ffffff;
+}
+
+.auth-brand {
+    font-weight: 800;
+    font-size: 1.6rem;
+    color: #1e293b;
+}
+
+/* Modern Form Controls */
+.form-control, .form-select {
+    border-radius: 0.5rem;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid var(--border-color);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Quick Action Badges */
+.badge-role {
+    font-size: 0.75rem;
+    padding: 0.35em 0.75em;
+    border-radius: 2rem;
+    font-weight: 600;
+}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}500 Server Error - Student Portal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-md-6 text-center">
+        <div class="display-1 text-danger font-weight-extrabold">500</div>
+        <h3 class="font-weight-bold mb-3">Internal Server Error</h3>
+        <p class="text-secondary mb-4">An unexpected system or database error occurred. The transaction has been safely rolled back.</p>
+        <a href="{{ url_for('dashboard.index') }}" class="btn btn-primary px-4 py-2"><i class="bi bi-arrow-left me-2"></i> Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Student Management Portal{% endblock %}
+
+{% block auth_content %}
+<div class="auth-wrapper">
+    <div class="card auth-card p-4 p-sm-5">
+        <div class="text-center mb-4">
+            <div class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded-circle mb-3" style="width: 60px; height: 60px;">
+                <i class="bi bi-mortarboard-fill fs-2"></i>
+            </div>
+            <h3 class="auth-brand mb-1">Student Portal</h3>
+            <p class="text-muted small">Sign in to manage academic records</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            <div class="mb-3">
+                <label for="identity" class="form-label font-weight-semibold">Username or Email</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-secondary"></i></span>
+                    <input type="text" class="form-control border-start-0" id="identity" name="identity" placeholder="admin or staff@college.edu" required autofocus>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label font-weight-semibold">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-secondary"></i></span>
+                    <input type="password" class="form-control border-start-0" id="password" name="password" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                    <label class="form-check-label text-muted small" for="remember">Remember Me</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2 font-weight-bold shadow-sm">
+                <i class="bi bi-box-arrow-in-right me-2"></i> Sign In
+            </button>
+        </form>
+
+        <div class="text-center mt-4 pt-3 border-top">
+            <p class="text-muted small mb-0">Don't have an account? <a href="{{ url_for('auth.register') }}" class="text-primary font-weight-bold text-decoration-none">Register User</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

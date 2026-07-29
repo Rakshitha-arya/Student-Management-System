@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}Students Directory - Student Management Portal{% endblock %}
+{% block page_heading %}Student Directory{% endblock %}
+
+{% block content %}
+<!-- Search & Filter Card -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-3">
+        <form method="GET" action="{{ url_for('student.list_students') }}" class="row g-2 align-items-center">
+            <!-- Search Query -->
+            <div class="col-12 col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-secondary"></i></span>
+                    <input type="text" name="search" class="form-control border-start-0" 
+                           placeholder="Search USN, Name or Email..." value="{{ search_query }}">
+                </div>
+            </div>
+
+            <!-- Department Filter -->
+            <div class="col-12 col-md-3">
+                <select name="department" class="form-select">
+                    <option value="">All Departments</option>
+                    {% for dept in departments %}
+                        <option value="{{ dept }}" {% if selected_dept == dept %}selected{% endif %}>{{ dept }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Semester Filter -->
+            <div class="col-12 col-md-2">
+                <select name="semester" class="form-select">
+                    <option value="">All Semesters</option>
+                    {% for sem in range(1, 9) %}
+                        <option value="{{ sem }}" {% if selected_sem == sem|string %}selected{% endif %}>Semester {{ sem }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="col-12 col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filter</button>
+                <a href="{{ url_for('student.list_students') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-counterclockwise"></i> Reset</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Student Data Table Card -->
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-dark">
+            <i class="bi bi-table me-2 text-primary"></i>
+            Showing {{ students|length }} of {{ pagination.total }} Students
+        </h6>
+        <a href="{{ url_for('student.add_student') }}" class="btn btn-sm btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Add Student
+        </a>
+    </div>
+
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table custom-table mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Photo</th>
+                        <th>USN / Roll No</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Semester</th>
+                        <th>Contact</th>
+                        <th class="pe-4 text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if students %}
+                        {% for std in students %}
+                        <tr>
+                            <td class="ps-4">
+                                <img src="{{ url_for('static', filename='uploads/' + (std.photo_filename or 'default_avatar.png')) }}" 
+                                     alt="Photo" class="avatar-img"
+                                     onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ std.name|urlencode }}&background=random';">
+                            </td>
+                            <td><span class="badge bg-light text-dark border font-monospace fs-6">{{ std.usn }}</span></td>
+                            <td class="font-weight-bold">{{ std.name }}</td>
+                            <td><span class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ std.department }}</span></td>
+                            <td><span class="badge bg-secondary-subtle text-dark">Sem {{ std.semester }}</span></td>
+                            <td>
+                                <div class="small">
+                                    <i class="bi bi-envelope text-muted me-1"></i> {{ std.email }}<br>
+                                    <i class="bi bi-telephone text-muted me-1"></i> {{ std.phone }}
+                                </div>
+                            </td>
+                            <td class="pe-4 text-end">
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ url_for('student.edit_student', student_id=std.id) }}" 
+                                       class="btn btn-outline-primary" title="Edit Student">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
+                                    {% if current_user.is_admin %}
+                                    <button type="button" class="btn btn-outline-danger" 
+                                            data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
+                                            data-student-id="{{ std.id }}"
+                                            data-student-name="{{ std.name }}"
+                                            data-student-usn="{{ std.usn }}"
+                                            data-delete-url="{{ url_for('student.delete_student', student_id=std.id) }}"
+                                            title="Delete Student">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
+                                No student records found matching your criteria.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination Footer -->
+    {% if pagination.pages > 1 %}
+    <div class="card-footer bg-white py-3 d-flex justify-content-between align-items-center">
+        <span class="small text-muted">
+            Page {{ pagination.page }} of {{ pagination.pages }}
+        </span>
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm m-0">
+                <!-- Previous Button -->
+                <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('student.list_students', page=pagination.prev_num, search=search_query, department=selected_dept, semester=selected_sem) }}">
+                        Previous
+                    </a>
+                </li>
+                
+                <!-- Page Numbers -->
+                {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('student.list_students', page=page_num, search=search_query, department=selected_dept, semester=selected_sem) }}">
+                                {{ page_num }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Next Button -->
+                <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('student.list_students', page=pagination.next_num, search=search_query, department=selected_dept, semester=selected_sem) }}">
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Admin Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title font-weight-bold" id="deleteModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p>Are you sure you want to permanently delete student record for:</p>
+                <div class="p-3 bg-light rounded border mb-3">
+                    <strong id="modalStudentName" class="fs-5 d-block"></strong>
+                    <span class="text-muted font-monospace" id="modalStudentUsn"></span>
+                </div>
+                <p class="text-danger small mb-0"><i class="bi bi-info-circle me-1"></i> This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteStudentForm" method="POST" action="">
+                    <button type="submit" class="btn btn-danger font-weight-bold"><i class="bi bi-trash me-1"></i> Delete Permanently</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

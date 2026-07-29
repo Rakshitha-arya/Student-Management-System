@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}404 Page Not Found - Student Portal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-md-6 text-center">
+        <div class="display-1 text-primary font-weight-extrabold">404</div>
+        <h3 class="font-weight-bold mb-3">Page Not Found</h3>
+        <p class="text-secondary mb-4">The page or student resource you are looking for might have been removed, renamed, or is temporarily unavailable.</p>
+        <a href="{{ url_for('dashboard.index') }}" class="btn btn-primary px-4 py-2"><i class="bi bi-house-door me-2"></i> Return to Dashboard</a>
+    </div>
+</div>
+{% endblock %}
