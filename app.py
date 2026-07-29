@@ -6,13 +6,17 @@ from routes.auth import auth_bp
 from routes.dashboard import dashboard_bp
 from routes.student import student_bp
 
+
 def create_app(config_name=None):
     """Application Factory Pattern for Student Management System."""
+
     if config_name is None:
-        config_name = os.environ.get('FLASK_ENV', 'development')
+        config_name = os.environ.get("FLASK_ENV", "development")
 
     app = Flask(__name__)
-    app.config.from_object(config_by_name.get(config_name, config_by_name['default']))
+    app.config.from_object(
+        config_by_name.get(config_name, config_by_name["default"])
+    )
 
     # Initialize Extensions
     db.init_app(app)
@@ -23,25 +27,35 @@ def create_app(config_name=None):
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(student_bp)
 
-    # Register Custom Exception & Error Handlers
+    # Error Handlers
     @app.errorhandler(404)
     def page_not_found(error):
-        return render_template('errors/404.html'), 404
+        return render_template("errors/404.html"), 404
 
     @app.errorhandler(500)
     def internal_server_error(error):
         db.session.rollback()
-        return render_template('errors/500.html'), 500
+        return render_template("errors/500.html"), 500
 
     # Ensure Upload Directory exists
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
-    # Auto-create Database tables if running in dev environment
-    with app.app_context():
-        db.create_all()
+    # Create database tables only for local development
+    if os.environ.get("VERCEL") is None:
+        with app.app_context():
+            db.create_all()
 
     return app
 
-if __name__ == '__main__':
-    app = create_app('development')
-    app.run(host='127.0.0.1', port=5000, debug=True)
+
+# ==========================================================
+# Create a top-level Flask app instance for Vercel
+# ==========================================================
+app = create_app(os.environ.get("FLASK_ENV", "production"))
+
+
+# ==========================================================
+# Run locally
+# ==========================================================
+if __name__ == "__main__":
+    app.run(host="127.0.0.1", port=5000, debug=True)
