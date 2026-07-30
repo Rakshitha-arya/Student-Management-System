@@ -38,6 +38,8 @@ def create_app(config_name=None):
         return render_template("errors/500.html"), 500
 
     # Ensure Upload Directory exists
+    # Create upload directory only when running locally
+    if os.environ.get("VERCEL") is None:
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
     # Create database tables only for local development
