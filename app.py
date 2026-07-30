@@ -11,7 +11,7 @@ def create_app(config_name=None):
     """Application Factory Pattern for Student Management System."""
 
     if config_name is None:
-        config_name = os.environ.get("FLASK_ENV", "development")
+        config_name = os.environ.get("FLASK_ENV", "production")
 
     app = Flask(__name__)
     app.config.from_object(
@@ -27,7 +27,9 @@ def create_app(config_name=None):
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(student_bp)
 
+    # ----------------------------
     # Error Handlers
+    # ----------------------------
     @app.errorhandler(404)
     def page_not_found(error):
         return render_template("errors/404.html"), 404
@@ -37,27 +39,29 @@ def create_app(config_name=None):
         db.session.rollback()
         return render_template("errors/500.html"), 500
 
-    # Ensure Upload Directory exists
-    # Create upload directory only when running locally
-    if os.environ.get("VERCEL") is None:
-    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+    # ----------------------------
+    # Local Development Only
+    # ----------------------------
+    if not os.environ.get("VERCEL"):
 
-    # Create database tables only for local development
-    if os.environ.get("VERCEL") is None:
+        # Create upload folder
+        os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+
+        # Create database
         with app.app_context():
             db.create_all()
 
     return app
 
 
-# ==========================================================
-# Create a top-level Flask app instance for Vercel
-# ==========================================================
-app = create_app(os.environ.get("FLASK_ENV", "production"))
+# ==========================================
+# Required by Vercel
+# ==========================================
+app = create_app()
 
 
-# ==========================================================
+# ==========================================
 # Run locally
-# ==========================================================
+# ==========================================
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=True)
