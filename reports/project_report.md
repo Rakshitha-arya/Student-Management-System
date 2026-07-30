@@ -1,7 +1,6 @@
 # Comprehensive Capstone Project Report
 ## Production-Ready Student Management Portal
-
-**Author**: Senior Software Engineering Intern  
+ 
 **Domain**: Full-Stack Web Application Development (Python / Flask)  
 **Technology Stack**: Python 3.10+, Flask, Flask-SQLAlchemy, Flask-Login, Bootstrap 5, SQLite / PostgreSQL  
 **Architecture**: Clean Architecture & Service-Layer Object-Oriented Design  
